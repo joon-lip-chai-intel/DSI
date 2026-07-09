@@ -1,0 +1,51 @@
+import re
+from itertools import islice
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-ps", "--port_speed_set", help="select what kind of speed options are: 10G/25G/50G/100G.", default="25",type=int)
+args = parser.parse_args()
+# port_speed_set ='25'
+def check_port_status():
+    i = 0
+    file_path = "//fs3//Ocelot//DSI//bin//EHM_Port_Status.txt"
+    file_path_ituff = "//fs3//Ocelot//DSI//bin//EHM_Port_ituff.txt"
+    failing_bit = 0
+    port_status=[]
+
+    with open(file_path, 'r') as file:
+        relevant_lines = islice(file, 11, 34)  # Only check lines 12 to 34
+        for line_number, line in enumerate(relevant_lines, 12):
+            if line.strip().startswith(tuple(map(str, range(10)))):  # Check if the line starts with a digit
+                if re.search(r'\bup\s+up\b', line):  # Check for the exact pattern "up up"
+                    i += 1
+                    print('Port {} is up'.format(i - 1))
+                    port_status.append("{}UP".format(i-1))
+                else:
+                    failing_bit = 1
+                    i += 1
+                    print("Port {} is not up".format(i - 1))
+                    port_status.append("{}DOWN".format(i-1))
+            else:
+                print("Error: Setup Port Driver failed, did not manage to see Port")
+                port_status.append("Driver_Setup_Failed")
+                with open(file_path_ituff, 'w') as file:
+                    file.write(f"##ITUFF_TOKEN##EHM_Port_{args.port_speed_set}G_Status\n")
+                    file.write(f"##ITUFF_PORT_STATUS##" + ':'.join(port_status))
+                exit(1)
+
+    if failing_bit == 0:
+        print('All Ports are UP')
+        with open(file_path_ituff, 'w') as file:
+            file.write(f"##ITUFF_TOKEN##EHM_Port_{args.port_speed_set}G_Status\n")
+            file.write(f"##ITUFF_PORT_STATUS##" + ':'.join(port_status))
+        exit(0)
+    else:
+        print("Port Setup Failed, some ports not able to link up")
+        with open(file_path_ituff, 'w') as file:
+            file.write(f"##ITUFF_TOKEN##EHM_Port_{args.port_speed_set}G_Status\n")
+            file.write(f"##ITUFF_PORT_STATUS##" + ':'.join(port_status))
+        exit(1)
+
+if __name__ == "__main__":
+    check_port_status()

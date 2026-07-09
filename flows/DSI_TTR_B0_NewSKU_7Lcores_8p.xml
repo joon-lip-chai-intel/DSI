@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow name="DSI_test" version="3.0" workingDir="../bin/">
+
+	<Group name="DSI_group">
+		<Var name="quad" value="0" />
+		<Var name="cpm_enable" value="1" />
+		<Var name="traffic" value="ipsec" />
+		<Var name="port_speed_set" value="25" />
+		<Var name="linerate_traffic" value="30" />
+		<Var name="linerate_snake" value="30" />
+		<Var name="linerate_port2x" value="30" />
+		<Var name="phy" value="cr" />
+
+		<DynamicVar name="var_dyn" value="$__python ../scripts/rate_validation/traffic_select.py -tr $traffic" errorMsg="Error:dynamic variable substitution failed"/>
+		<DynamicVar name="cpm_en" value="$__python ../scripts/rate_validation/cpm_enable.py -cpm $cpm_enable" errorMsg="Error:dynamic variable substitution failed"/>
+		<DynamicVar name="traffic_type" value="$__python ../scripts/rate_validation/traffic_select.py -tr $traffic" errorMsg="Error dynamic var traffic"/>
+		<DynamicVar name="port_speed" value="$__python ../scripts/rate_validation/port_speed_select.py -ps $port_speed_set" errorMsg="Error dynamic var port speed"/>
+		<DynamicVar name="phy_type" value="$__python ../scripts/rate_validation/phy_type_select.py -pt $phy" errorMsg="Error dynamic var phytype"/>
+		
+		<SubGroup name="DSI_test_subgroup1" concurrent="True">
+			<Test name="DSI_test_setup">
+				<Step cmd=" $__python ../scripts/cli_master_process.py " name="test_success_msg" errorMsg="Error: Cli master process not able to launch" ignoreFailure="True" cmdShell="True" bin="6403"/>
+			</Test>
+		</SubGroup>
+		
+		<SubGroup name="DSI_test_subgroup2" concurrent="True">
+			<Test name="DSI_1_test_app_launch">
+				<Step cmd="source /home/root/.profile" name="test_success_msg" errorMsg="Error: Setting hugepages Failed" cmdShell="True"  bin="6401"/>
+				<Step cmd="source /home/NAC/rdk/iwa_rdk.env &amp;&amp; nohup /home/NAC/app/crypto_inline_eth_tx_ppv/build_asic/ci_eth_tx --vdev=net_ice_dsi0,pci-bdf=f5:00.0,rxq=20,txq=20,ipsec_enable=${cpm_en},cmpltnq=20 -- -p 2 -i -e -l 512 -b 32 -c ${phy_type} -s 0 ${traffic_type} ${port_speed}" name="test_success_msg" errorMsg="Error: The DSI test application binary fails to launch" cmdShell="True" ignoreFailure="True" bin="6404"/>
+			</Test>
+
+			<Test name="DSI_1_test_sa_start_inline1" delay="25s">
+				<Step cmd="echo sa &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Start inline traffic fails to launch" cmdShell="True" bin="6407"/>
+			</Test>
+			<Test name="DSI_test_read_port_rate1" delay="30s">
+				<Step cmd=" $__python ../scripts/cli_processing_TTR.py -qd 0" name="test_success_msg" errorMsg="Error: Read port rate fails to launch" ignoreFailure="True" cmdShell="True" bin="6408"/>
+			</Test>
+
+
+			<Test name="DSI_1_test_x2_move_quad" delay="40s">
+				<Step cmd="echo x2 &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Move quad fails to launch" cmdShell="True" bin="6415"/>
+			</Test>
+			<Test name="DSI_1_test_sa_start_inline2" delay="50s">
+				<Step cmd="echo sa &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Start inline traffic fails to launch" cmdShell="True" bin="6417"/>
+			</Test>
+			<Test name="DSI_test_read_port_rate2" delay="55s">
+				<Step cmd=" $__python ../scripts/cli_processing_TTR.py -qd 2" name="test_success_msg" errorMsg="Error: Read port rate fails to launch" ignoreFailure="True" cmdShell="True" bin="6418"/>
+			</Test>
+
+
+			<Test name="DSI_1_test_x4_move_quad" delay="65s">
+				<Step cmd="echo x4 &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Move quad fails to launch" cmdShell="True" bin="6425"/>
+			</Test>
+			<Test name="DSI_1_test_sa_start_inline3" delay="75s">
+				<Step cmd="echo sa &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Start inline traffic fails to launch" cmdShell="True" bin="6427"/>
+			</Test>
+			<Test name="DSI_test_read_port_rate3" delay="80s">
+				<Step cmd=" $__python ../scripts/cli_processing_TTR.py -qd 4" name="test_success_msg" errorMsg="Error: Read port rate fails to launch" ignoreFailure="True" cmdShell="True" bin="6428"/>
+			</Test>
+
+
+			<Test name="DSI_1_test_x6_move_quad" delay="90s">
+				<Step cmd="echo x6 &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Move quad fails to launch" cmdShell="True" bin="6435"/>
+			</Test>
+			<Test name="DSI_1_test_sa_start_inline4" delay="100s">
+				<Step cmd="echo sa &gt; /tmp/ci_eth_tx_opt " name="test_success_msg" errorMsg="Error: Start inline traffic fails to launch" cmdShell="True" bin="6437"/>
+			</Test>
+			<Test name="DSI_test_read_port_rate4" delay="105s">
+				<Step cmd=" $__python ../scripts/cli_processing_TTR.py -qd 6" name="test_success_msg" errorMsg="Error: Read port rate fails to launch" ignoreFailure="True" cmdShell="True" bin="6438"/>
+			</Test>
+
+
+			<Test name="DSI_1_test_ta_stop_inline" delay="115s">
+				<Step cmd="nohup echo ta &gt; /tmp/ci_eth_tx_opt 2&gt;&amp;1 &amp; " name="test_success_msg" errorMsg="Error: Stop inline traffic fails to launch" cmdShell="True" bin="6409"/>
+			</Test>		
+
+			<Test name="DSI_test_e_exit" delay="125s">
+				<Step cmd="echo e &gt; /tmp/ci_eth_tx_opt 2&gt;&amp;1 &amp; " name="test_success_msg" errorMsg="Error: Unable to execute exit command" ignoreFailure="True" cmdShell="True" bin="6411"/>
+				<Step cmd=" $__python ../scripts/process_kill.py" name="test_success_msg" errorMsg="Error: Unable to kill cli process" ignoreFailure="True" cmdShell="True" bin="6412"/>
+			</Test>			
+
+			<Test name="DSI_test_stop" delay="135s">
+				<Step cmd=" $__python ../scripts/process_kill.py" name="test_success_msg" errorMsg="Error: Unable to kill cli process" ignoreFailure="True" cmdShell="True" bin="6413"/>
+			</Test>	
+	
+		</SubGroup>
+			
+		<SubGroup name="DSI_test_subgroup4">	
+			<Test name="DSI_test_log_validation1">
+				<ITUFFHandler name="ituffHandler" processingScript="../scripts/DSI_sd.py" STDOUT="False" fusionTestName="DSI_Tests"  errorMsg="Error doing ITUFF processing" bin="7770">
+					<ITUFFFile name="ituff_File1" dir="/fs3/Ocelot/DSI/bin/" fileRegex="ituff_logging_quad0.txt" utfEncoding="utf-8"/>
+				</ITUFFHandler>
+				<Step cmd=" $__python ../scripts/rate_validation/rate_validate_TTR_NewSKU_7Lcores.py -qd 0 -tr $traffic -t_lr $linerate_traffic -s_lr $linerate_snake -2x_lr $linerate_port2x -ps $port_speed_set -pt $phy"  name="Rate_validation" errorMsg="Error: Rates are below threshold" cmdShell="True" bin="6406"/>
+			</Test>
+		</SubGroup>
+			
+		<SubGroup name="DSI_test_subgroup5">	
+			<Test name="DSI_test_log_validation2">
+				<ITUFFHandler name="ituffHandler" processingScript="../scripts/DSI_sd.py" STDOUT="False" fusionTestName="DSI_Tests"  errorMsg="Error doing ITUFF processing" bin="7771">
+					<ITUFFFile name="ituff_File1" dir="/fs3/Ocelot/DSI/bin/" fileRegex="ituff_logging_quad2.txt" utfEncoding="utf-8"/>
+				</ITUFFHandler>
+				<Step cmd=" $__python ../scripts/rate_validation/rate_validate_TTR_NewSKU_7Lcores.py -qd 2 -tr $traffic -t_lr $linerate_traffic -s_lr $linerate_snake -2x_lr $linerate_port2x -ps $port_speed_set -pt $phy"  name="Rate_validation" errorMsg="Error: Rates are below threshold" cmdShell="True" bin="6416"/>
+			</Test>				
+		</SubGroup>
+			
+		<SubGroup name="DSI_test_subgroup6">
+			<Test name="DSI_test_log_validation3">
+				<ITUFFHandler name="ituffHandler" processingScript="../scripts/DSI_sd.py" STDOUT="False" fusionTestName="DSI_Tests"  errorMsg="Error doing ITUFF processing" bin="7772">
+					<ITUFFFile name="ituff_File1" dir="/fs3/Ocelot/DSI/bin/" fileRegex="ituff_logging_quad4.txt" utfEncoding="utf-8"/>
+				</ITUFFHandler>
+				<Step cmd=" $__python ../scripts/rate_validation/rate_validate_TTR_NewSKU_7Lcores.py -qd 4 -tr $traffic -t_lr $linerate_traffic -s_lr $linerate_snake -2x_lr $linerate_port2x -ps $port_speed_set -pt $phy"  name="Rate_validation" errorMsg="Error: Rates are below threshold" cmdShell="True" bin="6426"/>
+			</Test>				
+		</SubGroup>
+			
+		<SubGroup name="DSI_test_subgroup7">
+			<Test name="DSI_test_log_validation4">
+				<ITUFFHandler name="ituffHandler" processingScript="../scripts/DSI_sd.py" STDOUT="False" fusionTestName="DSI_Tests"  errorMsg="Error doing ITUFF processing" bin="7773">
+					<ITUFFFile name="ituff_File1" dir="/fs3/Ocelot/DSI/bin/" fileRegex="ituff_logging_quad6.txt" utfEncoding="utf-8"/>
+				</ITUFFHandler>
+				<Step cmd=" $__python ../scripts/rate_validation/rate_validate_TTR_NewSKU_7Lcores.py -qd 6 -tr $traffic -t_lr $linerate_traffic -s_lr $linerate_snake -2x_lr $linerate_port2x -ps $port_speed_set -pt $phy"  name="Rate_validation" errorMsg="Error: Rates are below threshold" cmdShell="True" bin="6436"/>
+			</Test>				
+		</SubGroup>
+		
+		
+	</Group>
+</Flow>

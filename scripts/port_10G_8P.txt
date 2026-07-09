@@ -1,0 +1,25 @@
+set port 0..19 pwrdown
+
+set port attribute 0..7 phy-ignore-nonce on
+
+set port attribute 0..7 phy-type 10g-sfi
+
+set port lane-attribute 0 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 1 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 2 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 3 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 4 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 5 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 6 single phy-tx-eq  0    0   55   0
+
+set port lane-attribute 7 single phy-tx-eq  0    0   55   0
+
+set port 0..7 up
+
+show port all

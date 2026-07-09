@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow name="DSI_test" version="3.0" workingDir="../bin/">
+	
+	<Group name="DSI_group">
+		<Var name="delays" value="20" />
+		<SubGroup name="DSI_Delay_Subgroup">
+				<Test name="DSI_Delay_Setup">
+				<Step cmd=" $__python ../scripts/run_delay.py -tdelay $delays" name="test_success_msg" errorMsg="Error: Delay python script error" cmdShell="True" bin="6403"/>
+			</Test>
+		</SubGroup>
+	</Group>
+</Flow>

@@ -1,0 +1,6 @@
+Since the binary is executed from /home/root/rte_rdk directory because of the dependency on the / root directory for 
+binary execution .
+
+commands to run 
+cp -Prv crypto_inline_eth_tx_ppv.tar.gz /home/root/rte_rdk
+tar-xvf crypto_inline_eth_tx_ppv.tar.gz

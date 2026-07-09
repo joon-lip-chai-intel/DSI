@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow name="DSI_test" version="3.0" workingDir="../bin/">
+
+	<Group name="DSI_group">
+
+		<SubGroup name="DSI_test_subgroup9">
+			<Test name="DSI_test_clean">
+				<Step cmd="/home/NAC/rdk/util/rmNAC.sh" name="test_success_msg" errorMsg="Error: DSI driver Unload Failed" cmdShell="True" bin="6401"/>
+				<Step cmd="unset LD_LIBRARY_PATH" name="test_success_msg" errorMsg="Error: DSI driver Unload Failed" cmdShell="True" bin="6401"/>
+				<Step cmd=" $__python ../scripts/copy_conf.py -tt 'default'" name="test_success_msg" errorMsg="Error: Fail to copy inline conf file" cmdShell="True" bin="6401"/>
+			</Test>
+		</SubGroup>
+	</Group>
+</Flow>

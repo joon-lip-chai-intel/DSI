@@ -1,0 +1,27 @@
+show port all
+
+sleep 1000
+
+show version
+
+show port 0..3  extended
+
+show port attribute 0..3
+
+show port attribute 0..3 link-fault-counters
+
+show port attribute 0..3 phy-rs-fec-adv-stats
+
+show port attribute 0..3 phy-anlt-info
+
+show port attribute 0..3 phy-pcs-status
+
+show port lane-attribute 0..3 single phy-tx-eq
+
+show port lane-attribute 0..3 single phy-rx-eq
+
+show port lane-attribute 0..3 single phy-clock-ppm
+
+show port lane-attribute 0..3 single phy-ehm
+
+

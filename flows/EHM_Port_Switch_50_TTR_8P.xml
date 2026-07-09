@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow name="EHM_Port_Setup" version="3.0" workingDir="../bin/">
+
+	<Group name="EHM_group">
+		<Var name="port_speed_set" value="50" />
+		
+		<SubGroup name="EHM_test_subgroup1">
+			<Test name="EHM_Cli_Master">
+				<Step cmd=" $__python ../scripts/cli_master_process.py " name="test_success_msg" errorMsg="Error: Cli master process not able to launch" cmdShell="True" bin="6403"/>
+			</Test>
+		</SubGroup>
+		
+		<SubGroup name="EHM_test_subgroup2">
+			<Test name="EHM_Port_setup" >
+				<Step cmd=" $__python ../scripts/cli_port_50g_8P.py" name="test_success_msg" errorMsg="Error: Set port up fails to launch" cmdShell="True" bin="6408"/>
+			</Test>
+		</SubGroup>
+
+		<SubGroup name="EHM_test_subgroup3">
+			<Test name="EHM_Read_Port" >
+				<Step cmd=" $__python ../scripts/EHM_cli_processing_TTR_8P.py" name="test_success_msg" errorMsg="Error: Read port rate fails to launch" cmdShell="True" bin="6408"/>
+			</Test>
+		</SubGroup>
+
+		<SubGroup name="EHM_test_subgroup4">
+			<Test name="EHM_Check_Port" >
+				<ITUFFHandler name="ituffHandler" processingScript="../scripts/EHM_sd.py" STDOUT="False" fusionTestName="EHM_Port_Setup"  errorMsg="Error doing ITUFF processing" bin="7771">
+					<ITUFFFile name="ituff_File1" dir="/fs3/Ocelot/DSI/bin/" fileRegex="EHM_Port_ituff_8P.txt" utfEncoding="utf-8"/>
+				</ITUFFHandler>
+				<Step cmd=" $__python ../scripts/ehm_port_status_check_8P.py -ps $port_speed_set" name="test_success_msg" errorMsg="Error: Port not up/driver issue" cmdShell="True" bin="6408"/>
+			</Test>
+		</SubGroup>
+	</Group>
+</Flow>

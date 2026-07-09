@@ -1,0 +1,9 @@
+set port  0..19 pwrdown
+
+set port attribute 0..3 phy-ignore-nonce on
+
+set port attribute 0..3 phy-type 25gbase-cr
+
+set port 0..3 up
+
+show port all
