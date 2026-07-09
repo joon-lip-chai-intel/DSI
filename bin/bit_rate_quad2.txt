@@ -1,0 +1,25 @@
+Basic Help:
+	<tab>     - tab complete commands
+	?         - context sensitive help
+	history   - show command history
+	!<hist>   - execute history number
+	load      - load a saved script
+	quit      - quit application
+<0>% show port stats all rates
+Port Speed  RX(%)  RX(Mbps) RX(Mpps)  TX(%)  TX(Mbps) TX(Mpps)
+---- ----- ------ --------- -------- ------ --------- --------
+   0    0G   0.00      0.00     0.00   0.00      0.00     0.00
+   1    0G   0.00      0.00     0.00   0.00      0.00     0.00
+   2   10G 100.00  10000.40     2.34 100.00  10000.40     2.34
+   3   10G 100.00  10000.40     2.34 100.00  10000.40     2.34
+   4    0G   0.00      0.00     0.00   0.00      0.00     0.00
+   5    0G   0.00      0.00     0.00   0.00      0.00     0.00
+   6    0G   0.00      0.00     0.00   0.00      0.00     0.00
+   7    0G   0.00      0.00     0.00   0.00      0.00     0.00
+  20  100G  20.00  20000.97     4.69  20.00  20000.89     4.69
+  21    0G   0.00      0.00     0.00   0.00      0.00     0.00
+  22    0G   0.00      0.00     0.00   0.00      0.00     0.00
+<0>% 
+Enable shared memory - Secondary process key ID = 1
+413.494:TID=2578:DRV:INFO:Driver Version: Major=4, Minor=1
+Error(1): Running CLI commands

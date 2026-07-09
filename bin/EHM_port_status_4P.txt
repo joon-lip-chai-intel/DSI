@@ -1,0 +1,312 @@
+Basic Help:
+	<tab>     - tab complete commands
+	?         - context sensitive help
+	history   - show command history
+	!<hist>   - execute history number
+	load      - load a saved script
+	quit      - quit application
+<0>% show port all
+Port   Mode   State Speed
+==== ======== ===== =====
+   0       up    up   10G
+   1       up    up   10G
+   2       up    up   10G
+   3       up    up   10G
+   4  pwrdown  down   ---
+   5  pwrdown  down   ---
+   6  pwrdown  down   ---
+   7  pwrdown  down   ---
+  20       up    up  100G
+  21  pwrdown  down   ---
+  22  pwrdown  down   ---
+<0>% 
+<0>% sleep 1000
+<0>% 
+<0>% show version
+        API:            6.0.28.0
+        BUILD:          IES_6.0.28.0_20251112 [BTS | debug]
+        Parser:         1.0.0.15
+        NAC NVM:        00.98 (etrack_id = 0x80007198)
+        FPPS AutoLoad:  00.20
+        NIS FW:         7.5.9
+        MNG PHY FW:     003B.05 (0x003B0517) [FW loaded]
+        Serdes PHY FW:  0445.B2 (0x0445B210) [FW loaded]
+        FPPS Stepping:  Gen2 B0
+        CPU:            GRR B0 (family=6,model=182,stepping=4)
+<0>% 
+<0>% show port 0..3  extended
+
+Port    Mode State   LF  Speed    Mod   LB  |Rev|Signal|TxPol |RxPol |FEC | E-Corr|E-Uncorr
+===========================================================================================
+   0      up    up         10G    SFI   --- | - | Y    | N    | N    | -- |  -----|  12350|
+   1      up    up         10G    SFI   --- | - | Y    | N    | N    | -- |  -----|   5658|
+   2      up    up         10G    SFI   --- | - | Y    | N    | N    | -- |  -----|  27608|
+   3      up    up         10G    SFI   --- | - | Y    | N    | N    | -- |  -----|  18496|
+
+  LF         : Link Fault       : lf=Local Fault,rf=Remote Fault, ad=Admin Down
+  LB         : Loopback         : Loc=Tx2Rx, RmS=Rx2Tx-Sync, RmA=Rx2Tx-Async, Mii=MII,
+                                  Fab=Fabric
+  Rev        : Lane Reversed    : N=No, Y=Yes. '-'=N/A to single lane modes.
+  Sig        : Signal Detect    : N=No, Y=Yes.         Lane order: 0,1,2,3
+  TxP        : Tx Polarity      : N=Normal R=Reversed. Lane order: 0,1,2,3
+  RxP        : Rx Polarity      : N=Normal R=Reversed. Lane order: 0,1,2,3
+  FEC        : FEC              : RS=Reed Solomon (rs_fec), FC=FireCode (fc_fec), '--'=No
+  E-Corr     : FEC enabled     -> Relative Corrected Errors.
+               FEC disabled    -> -----
+  E-Uncorr   : FEC enabled     -> Relative Uncorrected Errors.
+               FEC disabled    -> Relative Code Errors.
+
+  Usage      : show port <port> [extended [c] [s] [h]]
+     extended: show port extended information
+            c: clear relative error counters
+            s: switch between original and improved "show port extended" versions
+            h: show help (this page)
+
+<0>% 
+<0>% show port attribute 0..3
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+address-aging-time         0                   0                   0                   0                   
+admit-type                 all                 all                 all                 all                 
+allow-ipv6-udp-checksum-zerooff                 off                 off                 off                 
+deep-inspection            off                 off                 off                 off                 
+vlan-unaware               off                 off                 off                 off                 
+def-dest-port              -1                  -1                  -1                  -1                  
+def-dscp                   0                   0                   0                   0                   
+def-hash-profile           off,      -1        off,      -1        off,      -1        off,      -1        
+dei                        0                   0                   0                   0                   
+dei2                       0                   0                   0                   0                   
+dic                        on                  on                  on                  on                  
+drop-bv                    on                  on                  on                  on                  
+drop-ipv4-hdr-err          (none)              (none)              (none)              (none)              
+drop-parser-err            dsi,non-dsi         dsi,non-dsi         dsi,non-dsi         dsi,non-dsi         
+egress-vlan1-tag           0                   0                   0                   0                   
+egress-vlan2-first         UNSUPPORTED         UNSUPPORTED         UNSUPPORTED         UNSUPPORTED         
+egress-vlan2-tag           0                   0                   0                   0                   
+fabric-loopback            off                 off                 off                 off                 
+ifg                        12                  12                  12                  12                  
+ignored-frame-errors       0                   0                   0                   0                   
+ingress-vlan-tag           15                  15                  15                  15                  
+ip-payload-len-val         disabled            disabled            disabled            disabled            
+l4-checksum-val            disabled            disabled            disabled            disabled            
+ipv4-l4-checksum-val       disabled            disabled            disabled            disabled            
+ipv6-l4-checksum-val       disabled            disabled            disabled            disabled            
+l4-partial-checksum        off                 off                 off                 off                 
+l4-partial-checksum-non-headoff                 off                 off                 off                 
+learning                   on                  on                  on                  on                  
+link-fault-counters        NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   
+loopback-suppress          on                  on                  on                  on                  
+macsec                     off                 off                 off                 off                 
+drop-unsecured             off                 off                 off                 off                 
+max-frame-size             9728                9728                9728                9728                
+mii-loopback               off                 off                 off                 off                 
+min-avg-size               256                 256                 256                 256                 
+default-sa-id              4294967295          4294967295          4294967295          4294967295          
+default-spd-id             4294967295          4294967295          4294967295          4294967295          
+default-acl-id             4294967295          4294967295          4294967295          4294967295          
+default-outer-id           4294967295          4294967295          4294967295          4294967295          
+default-inner-id           4294967295          4294967295          4294967295          4294967295          
+default-pkt-type           4294967295          4294967295          4294967295          4294967295          
+phy-an37-enable            on                  on                  on                  on                  
+phy-an37-pause-mode        symmetric,asymmetricsymmetric,asymmetricsymmetric,asymmetricsymmetric,asymmetric
+phy-an-disable-lf-inh-tmr  off                 off                 off                 off                 
+phy-dfx-action             UNSUPPORTED         UNSUPPORTED         UNSUPPORTED         UNSUPPORTED         
+phy-fec-corrected-block    0                   0                   0                   0                   
+phy-fec-options            fc_fec,rs_fec       fc_fec,rs_fec       fc_fec,rs_fec       fc_fec,rs_fec       
+phy-fec-mode               (none)              (none)              (none)              (none)              
+phy-fec-request            on                  on                  on                  on                  
+phy-fec-uncorrected-block  0                   0                   0                   0                   
+phy-fec-lock               off                 off                 off                 off                 
+phy-loopback               off                 off                 off                 off                 
+phy-refclk                 eref0               eref0               eref0               eref0               
+phy-refclk-wol             eref0               eref0               eref0               eref0               
+phy-type                   10g-sfi             10g-sfi             10g-sfi             10g-sfi             
+phy-type-ability           100m-sgmii,1g-sgmii,sgmii,1000base-x,1000base-kx,2500base-x,2500base-kx,10g-sfi,10gbase-kr,25gbase-cr,25gbase-kr,25g-aui,25gbase-cr-s,25gbase-kr-s,50g-aui1,50gbase-cr,50gbase-kr,100gbase-cr2,100gbase-kr2,100g-aui2,100gbase-cr4,100gbase-kr4,100g-caui4100m-sgmii,1g-sgmii,sgmii,1000base-x,1000base-kx,2500base-x,2500base-kx,10g-sfi,10gbase-kr,25gbase-cr,25gbase-kr,25g-aui,25gbase-cr-s,25gbase-kr-s,50g-aui1,50gbase-cr,50gbase-kr100m-sgmii,1g-sgmii,sgmii,1000base-x,1000base-kx,2500base-x,2500base-kx,10g-sfi,10gbase-kr,25gbase-cr,25gbase-kr,25g-aui,25gbase-cr-s,25gbase-kr-s,50g-aui1,50gbase-cr,50gbase-kr100m-sgmii,1g-sgmii,sgmii,1000base-x,1000base-kx,2500base-x,2500base-kx,10g-sfi,10gbase-kr,25gbase-cr,25gbase-kr,25g-aui,25gbase-cr-s,25gbase-kr-s,50g-aui1,50gbase-cr,50gbase-kr
+phy-type-current           10g-sfi             10g-sfi             10g-sfi             10g-sfi             
+phy-ignore-nonce           on                  on                  on                  on                  
+phy-an-lp-basepage         0x000000000000        0x000000000000        0x000000000000        0x000000000000        
+phy-timestamp-enable       on                  on                  on                  on                  
+phy-timestamp-1step-enable off                 off                 off                 off                 
+phy-timestamp-point        first-byte          first-byte          first-byte          first-byte          
+phy-lt-enable              auto                auto                auto                auto                
+phy-lt-options             normal              normal              normal              normal              
+phy-peer-delay             0                   0                   0                   0                   
+phy-pcs-status             BlkLock(LL): 1(0) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(0) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(0) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(0) HiBER(LH): 0(0) BER-Cnt: 0 
+phy-vsr-enable             off                 off                 off                 off                 
+phy-rs-fec-adv-stats       c: 0      u: 0      c: 0      u: 0      c: 0      u: 0      c: 0      u: 0      
+phy-anlt-info              lt: N  d[ms]=0      lt: N  d[ms]=0      lt: N  d[ms]=0      lt: N  d[ms]=0      
+phy-no-hcd-event           off                 off                 off                 off                 
+phy-channel-type           auto                auto                auto                auto                
+phy-link-up-debouncing     0                   0                   0                   0                   
+phy-link-stats             up:3     dwn:2      up:3     dwn:2      up:3     dwn:2      up:3     dwn:2      
+port-entry-limit           0         0         0         0         
+port-mask                  100000              100000              100000              100000              
+pri                        0                   0                   0                   0                   
+pri2                       0                   0                   0                   0                   
+pri-tag                    0                   0                   0                   0                   
+pvid                       1                   1                   1                   1                   
+pvid2                      1                   1                   1                   1                   
+replace-vlan-fields        on                  on                  on                  on                  
+replace-tag-mode           replace-vid-vpri    replace-vid-vpri    replace-vid-vpri    replace-vid-vpri    
+rte-update-fields          dmac,smac,ttl,vlan  dmac,smac,ttl,vlan  dmac,smac,ttl,vlan  dmac,smac,ttl,vlan  
+rx-cut-through             on                  on                  on                  on                  
+rx-drain                   off                 off                 off                 off                 
+trap-l2-viol               off                 off                 off                 off                 
+tx-cut-through             on                  on                  on                  on                  
+tx-drain                   off                 off                 off                 off                 
+update-dei                 disable             disable             disable             disable             
+update-dei2                disable             disable             disable             disable             
+update-pri                 off                 off                 off                 off                 
+update-pri2                off                 off                 off                 off                 
+learn-on-nodrop            off                 off                 off                 off                 
+<0>% 
+<0>% show port attribute 0..3 link-fault-counters
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+link-fault-counters        NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   NF: 1 LF: 0 RF: 1   
+<0>% 
+<0>% show port attribute 0..3 phy-rs-fec-adv-stats
+
++------------------------------------------------------------------------------------------+
+| Port |          Total CW received |        Total CW corrected |     Total CW uncorrected |
+|    0 |                          0 |                         0 |                        0 |
++------------------------------------------------------------------------------------------+
+|           Per codeword corrected error stats  -sorted by number of symbol errors-        |
++------------------------------------------------------------------------------------------+
+|  0:                    0 |  4:               0 |  8:              0 | 12:              0 |
+|  1:                    0 |  5:               0 |  9:              0 | 13:              0 |
+|  2:                    0 |  6:               0 | 10:              0 | 14:              0 |
+|  3:                    0 |  7:               0 | 11:              0 | 15:              0 |
++------------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------------+
+| Port |          Total CW received |        Total CW corrected |     Total CW uncorrected |
+|    1 |                          0 |                         0 |                        0 |
++------------------------------------------------------------------------------------------+
+|           Per codeword corrected error stats  -sorted by number of symbol errors-        |
++------------------------------------------------------------------------------------------+
+|  0:                    0 |  4:               0 |  8:              0 | 12:              0 |
+|  1:                    0 |  5:               0 |  9:              0 | 13:              0 |
+|  2:                    0 |  6:               0 | 10:              0 | 14:              0 |
+|  3:                    0 |  7:               0 | 11:              0 | 15:              0 |
++------------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------------+
+| Port |          Total CW received |        Total CW corrected |     Total CW uncorrected |
+|    2 |                          0 |                         0 |                        0 |
++------------------------------------------------------------------------------------------+
+|           Per codeword corrected error stats  -sorted by number of symbol errors-        |
++------------------------------------------------------------------------------------------+
+|  0:                    0 |  4:               0 |  8:              0 | 12:              0 |
+|  1:                    0 |  5:               0 |  9:              0 | 13:              0 |
+|  2:                    0 |  6:               0 | 10:              0 | 14:              0 |
+|  3:                    0 |  7:               0 | 11:              0 | 15:              0 |
++------------------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------------------+
+| Port |          Total CW received |        Total CW corrected |     Total CW uncorrected |
+|    3 |                          0 |                         0 |                        0 |
++------------------------------------------------------------------------------------------+
+|           Per codeword corrected error stats  -sorted by number of symbol errors-        |
++------------------------------------------------------------------------------------------+
+|  0:                    0 |  4:               0 |  8:              0 | 12:              0 |
+|  1:                    0 |  5:               0 |  9:              0 | 13:              0 |
+|  2:                    0 |  6:               0 | 10:              0 | 14:              0 |
+|  3:                    0 |  7:               0 | 11:              0 | 15:              0 |
++------------------------------------------------------------------------------------------+
+
+<0>% 
+<0>% show port attribute 0..3 phy-anlt-info
+
++-------------------------------------------------------------------------------------+
+| Port | AN retries raw | AN retries | HCD vld | LT done | LT dur (ms) | Link Up (ms) |
++-------------------------------------------------------------------------------------+
+|    0 |              0 |          0 |    N    |    N    |           0 |          157 |
++-------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------+
+| Port | AN retries raw | AN retries | HCD vld | LT done | LT dur (ms) | Link Up (ms) |
++-------------------------------------------------------------------------------------+
+|    1 |              0 |          0 |    N    |    N    |           0 |          162 |
++-------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------+
+| Port | AN retries raw | AN retries | HCD vld | LT done | LT dur (ms) | Link Up (ms) |
++-------------------------------------------------------------------------------------+
+|    2 |              0 |          0 |    N    |    N    |           0 |          166 |
++-------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------+
+| Port | AN retries raw | AN retries | HCD vld | LT done | LT dur (ms) | Link Up (ms) |
++-------------------------------------------------------------------------------------+
+|    3 |              0 |          0 |    N    |    N    |           0 |          161 |
++-------------------------------------------------------------------------------------+
+
+<0>% 
+<0>% show port attribute 0..3 phy-pcs-status
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+phy-pcs-status             BlkLock(LL): 1(1) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(1) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(1) HiBER(LH): 0(0) BER-Cnt: 0 BlkLock(LL): 1(1) HiBER(LH): 0(0) BER-Cnt: 0 
+<0>% 
+<0>% show port lane-attribute 0..3 single phy-tx-eq
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+phy-tx-eq                  0    0    55   0    0    0    55   0    0    0    55   0    0    0    55   0    
+phy-tx-eq-current          0    0    55   0    0    0    55   0    0    0    55   0    0    0    55   0    
+<0>% 
+<0>% show port lane-attribute 0..3 single phy-rx-eq
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+phy-rx-eq                  
+port: 0 
+vga: 49   ctle: 101  mbz: 5    iqclk: 64   
+dfe tap#    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+--------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+even       -6    4    7    3    1    2    1    2    0    1    1    0    0    0    0    1
+odd        -6    4    6    3    2    2    1    2    1    0    1    0    1    0    1    1
+port: 1 
+vga: 47   ctle: 99   mbz: 5    iqclk: 64   
+dfe tap#    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+--------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+even       -7    5    7    2    2    3    1    2    0    2    0    1    1    0    1    1
+odd        -6    6    7    2    2    3    1    1    1    2    1    1    0    1    0    1
+port: 2 
+vga: 49   ctle: 97   mbz: 5    iqclk: 64   
+dfe tap#    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+--------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+even       -6    5    6    0    3    2    2    1    1    2    0    0    0    2    0    0
+odd        -6    5    5    1    3    2    2    2    0    2    1    0    1    1    0    0
+port: 3 
+vga: 47   ctle: 95   mbz: 5    iqclk: 64   
+dfe tap#    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+--------  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---
+even       -7    9    3    2    3    3    2    0    2    1    1   -1    2    1    0    1
+odd        -7   10    3    2    3    2    1    0    2    1    0    0    2    1   -1    0
+<0>% 
+<0>% show port lane-attribute 0..3 single phy-clock-ppm
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+phy-clock-ppm              0                   0                   0                   0                   
+<0>% 
+<0>% show port lane-attribute 0..3 single phy-ehm
+     Attribute             Port: 0             Port: 1             Port: 2             Port: 3             
+=========================  ==================  ==================  ==================  ==================  
+phy-ehm                    
+eye#      0     1     2
+value   174     0     0
+
+eye#      0     1     2
+value   180     0     0
+
+eye#      0     1     2
+value   171     0     0
+
+eye#      0     1     2
+value   183     0     0
+
+<0>% 
+<0>% 
+<0>% 
+Enable shared memory - Secondary process key ID = 1
+93.246:TID=1735:DRV:INFO:Driver Version: Major=4, Minor=1
+Error(1): Running CLI commands

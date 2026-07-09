@@ -1,0 +1,4 @@
+Enable shared memory - Secondary process key ID = 1
+404.714:TID=3396:ALLOC:ERROR:Cannot start secondary: shared memory does not exist
+404.714:TID=3396:INIT:ERROR:Failed to initialize shared memory (err=NO_MEM)
+Error(2): Initializing API
