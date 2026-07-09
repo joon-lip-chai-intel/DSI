@@ -66,6 +66,28 @@ while [[ $# -gt 0 ]]; do
             CLEANUP_WAIT=5
             shift
             ;;
+        --ultra-fast)
+            # Ultra-fast mode - aggressive timing (may be less stable)
+            INITIAL_WAIT=12
+            SA_WAIT=2
+            QUAD_TRANSITION_WAIT=3
+            STOP_WAIT=3
+            EXIT_WAIT=3
+            CLEANUP_WAIT=3
+            DELAYS=15
+            shift
+            ;;
+        --aggressive)
+            # Aggressive mode - balanced between speed and stability
+            INITIAL_WAIT=10
+            SA_WAIT=2
+            QUAD_TRANSITION_WAIT=4
+            STOP_WAIT=4
+            EXIT_WAIT=4
+            CLEANUP_WAIT=4
+            DELAYS=15
+            shift
+            ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -86,9 +108,16 @@ while [[ $# -gt 0 ]]; do
             echo "  --stop_wait <sec>            Wait before stopping traffic (default: 10)"
             echo "  --exit_wait <sec>            Wait before exit (default: 10)"
             echo "  --cleanup_wait <sec>         Wait before cleanup (default: 10)"
-            echo "  --fast                       Use faster timing (50% reduction)"
+            echo ""
+            echo "Speed Modes (recommended for faster execution):"
+            echo "  --fast                       Fast mode (~125s, stable, RECOMMENDED)"
+            echo "  --ultra-fast                 Ultra-fast mode (~90s, may be less stable)"
+            echo "  --aggressive                 Aggressive mode (~75s, least stable, risk of timing issues)"
             echo ""
             echo "  -h, --help                   Show this help message"
+            echo ""
+            echo "Example:"
+            echo "  $0 --ultra-fast --phy cr --port_speed_set 25 --traffic clear"
             exit 0
             ;;
         *)
@@ -166,7 +195,12 @@ log "  Stop Wait:         $STOP_WAIT seconds"
 log "  Exit Wait:         $EXIT_WAIT seconds"
 log "  Cleanup Wait:      $CLEANUP_WAIT seconds"
 log ""
-log "Estimated Total Time: ~$(( INITIAL_WAIT + (SA_WAIT * 5) + (QUAD_TRANSITION_WAIT * 8) + STOP_WAIT + EXIT_WAIT + CLEANUP_WAIT + DELAYS )) seconds"
+# More accurate estimation including overhead
+PYTHON_OVERHEAD=30  # cli_processing_TTR.py runs 5 times @ ~6s each
+DRIVER_OVERHEAD=10  # Driver load/unload time
+OTHER_OVERHEAD=5    # sleep, validation scripts, etc.
+ESTIMATED_TIME=$(( INITIAL_WAIT + (SA_WAIT * 5) + (QUAD_TRANSITION_WAIT * 4) + STOP_WAIT + EXIT_WAIT + CLEANUP_WAIT + DELAYS + PYTHON_OVERHEAD + DRIVER_OVERHEAD + OTHER_OVERHEAD ))
+log "Estimated Total Time: ~${ESTIMATED_TIME}s (includes ~45s overhead for scripts/drivers)"
 log "================================================================================"
 log "Log file: $LOG_FILE"
 log "================================================================================"
