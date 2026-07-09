@@ -291,9 +291,15 @@ check_status "Final process kill" "ignore"
 # PHASE 4: Log Validation
 print_header "PHASE 4: Log Validation and Rate Validation"
 
+# Initialize pass/fail counters
+TOTAL_TESTS=0
+PASSED_TESTS=0
+FAILED_TESTS=0
+
 # Function to validate quad
 validate_quad() {
     local quad_num=$1
+    TOTAL_TESTS=$((TOTAL_TESTS + 1))
 
     print_step "Validating Quad $quad_num logs..."
 
@@ -305,8 +311,45 @@ validate_quad() {
         log "${YELLOW}Warning: ITUFF log file for Quad $quad_num not found${NC}"
     fi
 
-    $PYTHON_CMD $SCRIPT_DIR/rate_validation/rate_validate_TTR.py -qd $quad_num -tr $TRAFFIC -t_lr $LINERATE_TRAFFIC -s_lr $LINERATE_SNAKE -2x_lr $LINERATE_PORT2X -ps $PORT_SPEED_SET -pt $PHY >> "$LOG_FILE" 2>&1
-    check_status "Rate validation for Quad $quad_num"
+    # Run rate validation and capture output and exit code
+    RATE_OUTPUT=$($PYTHON_CMD $SCRIPT_DIR/rate_validation/rate_validate_TTR.py -qd $quad_num -tr $TRAFFIC -t_lr $LINERATE_TRAFFIC -s_lr $LINERATE_SNAKE -2x_lr $LINERATE_PORT2X -ps $PORT_SPEED_SET -pt $PHY 2>&1)
+    RATE_EXIT_CODE=$?
+
+    # Log the output
+    echo "$RATE_OUTPUT" >> "$LOG_FILE"
+
+    # Check if test passed or failed
+    if [ $RATE_EXIT_CODE -eq 0 ]; then
+        log "${GREEN}? PASSED: Rate validation for Quad $quad_num${NC}"
+        PASSED_TESTS=$((PASSED_TESTS + 1))
+
+        # Extract and display the pass message
+        PASS_MSG=$(echo "$RATE_OUTPUT" | grep "test Passed" | sed 's/##//g' | sed 's/#DSI_END#//g')
+        if [ ! -z "$PASS_MSG" ]; then
+            log "${GREEN}  $PASS_MSG${NC}"
+        fi
+    else
+        log "${RED}? FAILED: Rate validation for Quad $quad_num${NC}"
+        FAILED_TESTS=$((FAILED_TESTS + 1))
+
+        # Extract and display the fail message
+        FAIL_MSG=$(echo "$RATE_OUTPUT" | grep "test Failed" | sed 's/##//g' | sed 's/#DSI_END#//g')
+        if [ ! -z "$FAIL_MSG" ]; then
+            log "${RED}  $FAIL_MSG${NC}"
+        fi
+    fi
+
+    # Display ITUFF comparison if available
+    if [ -f "$BIN_DIR/ituff_logging_quad$quad_num.txt" ]; then
+        print_info "ITUFF Data for Quad $quad_num:"
+        LIMIT_LINE=$(grep "ITUFF_LIMIT" "$BIN_DIR/ituff_logging_quad$quad_num.txt" 2>/dev/null | sed 's/##ITUFF_LIMIT##//')
+        VALUE_LINE=$(grep "ITUFF_VALUE" "$BIN_DIR/ituff_logging_quad$quad_num.txt" 2>/dev/null | sed 's/##ITUFF_VALUE##//')
+        if [ ! -z "$LIMIT_LINE" ] && [ ! -z "$VALUE_LINE" ]; then
+            log "${BLUE}    LIMIT_LINERATE: $LIMIT_LINE${NC}"
+            log "${BLUE}    READ_LINERATE:  $VALUE_LINE${NC}"
+        fi
+    fi
+    log ""
 }
 
 # Validate all quads
@@ -317,15 +360,48 @@ validate_quad 12
 validate_quad 16
 
 # Final Summary
-print_header "Test Execution Completed"
-log "${GREEN}All DSI test phases have been executed successfully!${NC}"
+print_header "Test Execution Summary"
+
+# Display test results
 log ""
-log "Test Summary:"
-log "  Phases executed:"
-log "    1. DSI Port Setup"
-log "    2. DSI Delay ($DELAYS seconds)"
-log "    3. DSI TTR B0 Test (5 quads: 0, 4, 8, 12, 16)"
-log "    4. Log Validation and Rate Validation"
+log "================================================================================"
+log "                         TEST RESULTS"
+log "================================================================================"
+log ""
+log "Configuration:"
+log "  PHY Type:          $PHY"
+log "  Port Speed:        ${PORT_SPEED_SET}G"
+log "  Traffic Type:      $TRAFFIC"
+log "  Line Rate Traffic: $LINERATE_TRAFFIC%"
+log ""
+log "Test Results by Quad:"
+log "  Total Quads Tested: $TOTAL_TESTS"
+log "  ${GREEN}Passed: $PASSED_TESTS${NC}"
+log "  ${RED}Failed: $FAILED_TESTS${NC}"
+log ""
+
+# Determine overall result
+if [ $FAILED_TESTS -eq 0 ]; then
+    log "${GREEN}??????????????????????????????????????????${NC}"
+    log "${GREEN}?     OVERALL RESULT: ? PASSED          ?${NC}"
+    log "${GREEN}??????????????????????????????????????????${NC}"
+    OVERALL_RESULT="SUCCESS"
+    EXIT_CODE=0
+else
+    log "${RED}??????????????????????????????????????????${NC}"
+    log "${RED}?     OVERALL RESULT: ? FAILED          ?${NC}"
+    log "${RED}??????????????????????????????????????????${NC}"
+    OVERALL_RESULT="FAILED"
+    EXIT_CODE=1
+fi
+
+log ""
+log "================================================================================"
+log "Phases Executed:"
+log "  1. DSI Port Setup"
+log "  2. DSI Delay ($DELAYS seconds)"
+log "  3. DSI TTR B0 Test (5 quads: 0, 4, 8, 12, 16)"
+log "  4. Log Validation and Rate Validation"
 log ""
 log "Output files:"
 log "  Test log:        $LOG_FILE"
@@ -333,5 +409,8 @@ log "  Application log: $BIN_DIR/dsi_app.log"
 log "  ITUFF logs:      $BIN_DIR/ituff_logging_quad*.txt"
 log "  ITUFF XML:       $BIN_DIR/ituff_logging_quad*_structured.xml"
 log "================================================================================"
+log ""
+log "Ocelot Main: Result=$OVERALL_RESULT Time: $SECONDS"
+log ""
 
-exit 0
+exit $EXIT_CODE
