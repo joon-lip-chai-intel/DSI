@@ -298,8 +298,7 @@ validate_quad() {
     print_step "Validating Quad $quad_num logs..."
 
     if [ -f "$BIN_DIR/ituff_logging_quad$quad_num.txt" ]; then
-        # DSI_sd.py requires 3 arguments: <test_name> <raw_datalog_input> <structured_datalog_output>
-        $PYTHON_CMD $SCRIPT_DIR/DSI_sd.py "DSI_Tests" "$BIN_DIR/ituff_logging_quad$quad_num.txt" "$BIN_DIR/ituff_logging_quad${quad_num}_structured.xml" >> "$LOG_FILE" 2>&1
+        $PYTHON_CMD $SCRIPT_DIR/DSI_sd.py $BIN_DIR/ituff_logging_quad$quad_num.txt >> "$LOG_FILE" 2>&1
         check_status "ITUFF processing for Quad $quad_num" "ignore"
     else
         log "${YELLOW}Warning: ITUFF log file for Quad $quad_num not found${NC}"
@@ -331,7 +330,6 @@ log "Output files:"
 log "  Test log:        $LOG_FILE"
 log "  Application log: $BIN_DIR/dsi_app.log"
 log "  ITUFF logs:      $BIN_DIR/ituff_logging_quad*.txt"
-log "  ITUFF XML:       $BIN_DIR/ituff_logging_quad*_structured.xml"
 log "================================================================================"
 
 exit 0
